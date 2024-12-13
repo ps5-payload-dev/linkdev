@@ -72,7 +72,7 @@ int SDL_main(int argc, char* args[])
 	return -1;
     }
 
-    if(!(font=TTF_OpenFont("/preinst/common/font/DFHEI5-SONY.ttf", 84))) {
+    if(!(font=TTF_OpenFont("/preinst/common/font/n023055ms.ttf", 84))) {
         printf("TTF_OpenFontRW: %s\n", TTF_GetError());
         return 1; // Handle the error
     }
