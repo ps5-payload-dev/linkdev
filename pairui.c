@@ -197,7 +197,7 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
         DrawText(renderer, "Link Device", font, xoff, yoff, color);
 
         yoff += (int)TTF_FontHeight(font) * 8;
-        xoff += (int)TTF_FontHeight(font) * 10;
+        xoff += (int)TTF_FontHeight(font) * 14;
 
         if(t-time(0) < 0) {
             idle = 1;
@@ -228,11 +228,11 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
             sprintf(buf, "Accound Id    : %s", id);
             DrawText(renderer, buf, font, xoff, yoff, color);
 
-            yoff += (int)TTF_FontHeight(font);
+            yoff += (int)TTF_FontHeight(font) * 1.5;
             sprintf(buf, "PIN           : %04d %04d", pin / 10000, pin % 10000);
             DrawText(renderer, buf, font, xoff, yoff, color);
 
-            yoff += (int)TTF_FontHeight(font);
+            yoff += (int)TTF_FontHeight(font) * 1.5;
             sprintf(buf, "Remaining time: %ld seconds", t-time(0));
             DrawText(renderer, buf, font, xoff, yoff, color);
         }

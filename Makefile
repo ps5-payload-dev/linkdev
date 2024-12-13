@@ -33,16 +33,11 @@ ELF := LinkDev.elf
 
 all: $(ELF)
 
-font.h: assets/font.ttf
-	xxd -i $< $@
-
-main.c: font.h
-
 $(ELF): main.c notify.c regmgr.c pairui.c
 	$(CC) $(CFLAGS) -o $@ $(LDADD) $^
 
 clean:
-	rm -f $(ELF) font.h
+	rm -f $(ELF)
 
 upload: $(ELF)
 	curl -T $^ ftp://$(PS5_HOST):2121/data/homebrew/LinkDev/$^

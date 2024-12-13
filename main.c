@@ -30,7 +30,6 @@ int SDL_main(int argc, char* args[])
 {
     SDL_Renderer* renderer;
     SDL_Window* window;
-    SDL_RWops* rwops;
     TTF_Font* font;
     int rp_enable;
     int err;
@@ -73,13 +72,10 @@ int SDL_main(int argc, char* args[])
         printf("TTF_Init: %s\n", SDL_GetError());
 	return -1;
     }
-    if(!(rwops=SDL_RWFromMem(assets_font_ttf, assets_font_ttf_len))) {
-        printf("SDL_RWFromMem: %s\n", SDL_GetError());
-	return -1;
-    }
-    if(!(font=TTF_OpenFontRW(rwops, 1, 88))) {
-        printf("TTF_OpenFontRW: %s\n", SDL_GetError());
-	return -1;
+
+    if(!(font=TTF_OpenFont("/preinst/common/font/DFHEI5-SONY.ttf", 84))) {
+        printf("TTF_OpenFontRW: %s\n", TTF_GetError());
+        return 1; // Handle the error
     }
 
     err = PairUI_Main(renderer, font);
