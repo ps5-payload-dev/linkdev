@@ -209,7 +209,7 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
 
         } else if(pair_status == 2) {
             idle = 1;
-            DrawText(renderer, "       Pairing complete",
+            DrawText(renderer, "      Pairing complete",
                      font, xoff, yoff, color);
 
         } else if(pair_status == 3) {
