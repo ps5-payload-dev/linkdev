@@ -17,7 +17,6 @@ along with this program; see the file COPYING. If not, see
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-#include "font.h"
 #include "pairui.h"
 #include "regmgr.h"
 
