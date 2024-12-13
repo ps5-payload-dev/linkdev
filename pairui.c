@@ -16,12 +16,17 @@ along with this program; see the file COPYING. If not, see
 
 #include <time.h>
 
+#include <ps5/kernel.h>
+
 #include "notify.h"
 #include "pairui.h"
 #include "regmgr.h"
 
 
-int sceKernelDlsym(int, const char*, void*);
+#define KERNEL_DLSYM(handle, sym) \
+    (sym=(void*)kernel_dynlib_dlsym(-1, handle, #sym))
+
+
 int sceKernelLoadStartModule(const char*, unsigned long, const void*,
                              unsigned int, void*, int*);
 int sceUserServiceGetForegroundUser(int *);
@@ -44,22 +49,18 @@ static int RemoteplayInit(void)
         return -1;
     }
 
-    if(sceKernelDlsym(handle, "sceRemoteplayInitialize",
-                      &sceRemoteplayInitialize)) {
+    if(!KERNEL_DLSYM(handle, sceRemoteplayInitialize)) {
         return -1;
     }
     sceRemoteplayInitialize(0, 0);
 
-    if(sceKernelDlsym(handle, "sceRemoteplayGeneratePinCode",
-                      &sceRemoteplayGeneratePinCode)) {
+    if(!KERNEL_DLSYM(handle, sceRemoteplayGeneratePinCode)) {
         return -1;
     }
-    if(sceKernelDlsym(handle, "sceRemoteplayConfirmDeviceRegist",
-                      &sceRemoteplayConfirmDeviceRegist)) {
+    if(!KERNEL_DLSYM(handle, sceRemoteplayConfirmDeviceRegist)) {
         return -1;
     }
-    if(sceKernelDlsym(handle, "sceRemoteplayNotifyPinCodeError",
-                      &sceRemoteplayNotifyPinCodeError)) {
+    if(!KERNEL_DLSYM(handle, sceRemoteplayNotifyPinCodeError)) {
         return -1;
     }
 
