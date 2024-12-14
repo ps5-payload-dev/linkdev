@@ -143,6 +143,7 @@ static int GetAccountId(char* str)
 int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
 {
     SDL_Color color = {240, 240, 240, 255};
+    SDL_Rect rect = {0};
     uint32_t pin = 0;
     SDL_Event event;
     int pair_status;
@@ -152,15 +153,25 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
     char id[65];
     int xoff;
     int yoff;
-    int err;
     time_t t;
+    int err;
+    int w;
+    int h;
+
+    if(RemoteplayInit()) {
+        return -1;
+    }
 
     if(GetAccountId(id)) {
         return -1;
     }
-    if(RemoteplayInit()) {
-        return -1;
+
+    if(SDL_GetRendererOutputSize(renderer, &w, &h)) {
+        printf("SDL_GetRendererOutputSize: %s\n", SDL_GetError());
+	return -1;
     }
+
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
     sceRemoteplayNotifyPinCodeError(1);
     if((err=sceRemoteplayGeneratePinCode(&pin))) {
@@ -190,11 +201,18 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
 
         SDL_SetRenderDrawColor(renderer, 0x05, 0x0d, 0x1c, 0xff);
         SDL_RenderClear(renderer);
-
-        xoff = (int)TTF_FontHeight(font);
-        yoff = (int)TTF_FontHeight(font);
+        xoff = (int)TTF_FontHeight(font) / 4;
+        yoff = (int)TTF_FontHeight(font) / 4;
 
         DrawText(renderer, "Link Device", font, xoff, yoff, color);
+        yoff += (int)TTF_FontHeight(font);
+
+        rect.x = 0;
+        rect.y = yoff;
+        rect.h = (int)TTF_FontHeight(font) / 16;
+        rect.w = w;
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+        SDL_RenderFillRect(renderer, &rect);
 
         yoff += (int)TTF_FontHeight(font) * 8;
         xoff += (int)TTF_FontHeight(font) * 14;
