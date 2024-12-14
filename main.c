@@ -68,13 +68,13 @@ int SDL_main(int argc, char* args[])
     SDL_GameControllerOpen(0);
 
     if(TTF_Init() < 0) {
-        printf("TTF_Init: %s\n", SDL_GetError());
+        printf("TTF_Init: %s\n", TTF_GetError());
 	return -1;
     }
 
     if(!(font=TTF_OpenFont("/preinst/common/font/n023055ms.ttf", 84))) {
         printf("TTF_OpenFontRW: %s\n", TTF_GetError());
-        return 1; // Handle the error
+        return 1;
     }
 
     err = PairUI_Main(renderer, font);
