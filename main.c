@@ -22,7 +22,7 @@ along with this program; see the file COPYING. If not, see
 
 #define WINDOW_TITLE  "LinkDev"
 #define SCREEN_WIDTH  1920
-#define SCREEN_HEIGHT 1280
+#define SCREEN_HEIGHT 1080
 
 
 int SDL_main(int argc, char* args[])
@@ -72,7 +72,7 @@ int SDL_main(int argc, char* args[])
 	return -1;
     }
 
-    if(!(font=TTF_OpenFont("/preinst/common/font/n023055ms.ttf", 84))) {
+    if(!(font=TTF_OpenFont("/preinst/common/font/n023055ms.ttf", 44))) {
         printf("TTF_OpenFontRW: %s\n", TTF_GetError());
         return 1;
     }
