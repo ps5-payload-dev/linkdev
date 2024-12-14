@@ -93,6 +93,14 @@ static void DrawText(SDL_Renderer* renderer, const char* text,
     SDL_Surface* surface = TTF_RenderText_Solid(font, text, color);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect rect = {x, y, surface->w, surface->h};
+    int w;
+    int h;
+
+    // center
+    if(x < 0) {
+        SDL_GetRendererOutputSize(renderer, &w, &h);
+        rect.x = w / 2 - surface->w / 2;
+    }
 
     SDL_RenderCopy(renderer, texture, NULL, &rect);
     SDL_FreeSurface(surface);
@@ -146,9 +154,9 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
     SDL_Rect rect = {0};
     uint32_t pin = 0;
     SDL_Event event;
-    int pair_status;
-    int pair_error;
-    char buf[255];
+    int pair_stat;
+    int pair_err;
+    char buf[99];
     int idle = 0;
     char id[65];
     int xoff;
@@ -215,44 +223,42 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
         SDL_RenderFillRect(renderer, &rect);
 
         yoff += (int)TTF_FontHeight(font) * 8;
-        xoff += (int)TTF_FontHeight(font) * 14;
+        idle = 1;
 
         if(t-time(0) < 0) {
-            idle = 1;
-            DrawText(renderer, "       Error: timeout", font, xoff, yoff, color);
-        } else if((err=sceRemoteplayConfirmDeviceRegist(&pair_status, &pair_error))) {
-            idle = 1;
-            sprintf(buf, "       Error: 0x%x", err);
-            DrawText(renderer, buf, font, xoff, yoff, color);
+            DrawText(renderer, "Error: timeout", font, -1, yoff, color);
 
-        } else if(pair_status == 2) {
-            idle = 1;
-            DrawText(renderer, "      Pairing complete",
-                     font, xoff, yoff, color);
+        } else if((err=sceRemoteplayConfirmDeviceRegist(&pair_stat, &pair_err))) {
+            sprintf(buf, "Error: 0x%x", err);
+            DrawText(renderer, buf, font, -1, yoff, color);
 
-        } else if(pair_status == 3) {
-            idle = 1;
-            if(pair_error == 0x80FC1047) {
+        } else if(pair_stat == 2) {
+            DrawText(renderer, "Pairing complete", font, -1, yoff, color);
+
+        } else if(pair_stat == 3) {
+            if(pair_err == 0x80FC1047) {
                 DrawText(renderer, "    Error: incorrect PIN",
-                         font, xoff, yoff, color);
-            } else if(pair_error == 0x80FC1040) {
+                         font, -1, yoff, color);
+            } else if(pair_err == 0x80FC1040) {
                 DrawText(renderer, " Error: incorrect Account Id",
-                         font, xoff, yoff, color);
+                         font, -1, yoff, color);
             } else {
-                sprintf(buf, "       Error: 0x%x", pair_error);
-                DrawText(renderer, buf, font, xoff, yoff, color);
+                sprintf(buf, "       Error: 0x%x", pair_err);
+                DrawText(renderer, buf, font, -1, yoff, color);
             }
         } else {
+            idle = 0;
             sprintf(buf, "Accound Id    : %s", id);
-            DrawText(renderer, buf, font, xoff, yoff, color);
+            DrawText(renderer, buf, font, -1, yoff, color);
 
             yoff += (int)TTF_FontHeight(font) * 1.5;
-            sprintf(buf, "PIN           : %04d %04d", pin / 10000, pin % 10000);
-            DrawText(renderer, buf, font, xoff, yoff, color);
+            sprintf(buf, "PIN code      : %04d %04d    ",
+                    pin / 10000, pin % 10000);
+            DrawText(renderer, buf, font, -1, yoff, color);
 
             yoff += (int)TTF_FontHeight(font) * 1.5;
-            sprintf(buf, "Remaining time: %ld seconds", t-time(0));
-            DrawText(renderer, buf, font, xoff, yoff, color);
+            sprintf(buf, "Remaining time: %-3ld seconds  ", t-time(0));
+            DrawText(renderer, buf, font, -1, yoff, color);
         }
 
         SDL_RenderPresent(renderer);
