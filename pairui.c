@@ -222,42 +222,42 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
         SDL_RenderFillRect(renderer, &rect);
 
-        yoff += (int)TTF_FontHeight(font) * 8;
+        yoff += (int)TTF_FontHeight(font) * 7;
         idle = 1;
 
         if(t-time(0) < 0) {
-            DrawText(renderer, "Error: timeout", font, -1, yoff, color);
+            DrawText(renderer, "Error: timeout", font, -1, h/2, color);
 
         } else if((err=sceRemoteplayConfirmDeviceRegist(&pair_stat, &pair_err))) {
             sprintf(buf, "Error: 0x%x", err);
             DrawText(renderer, buf, font, -1, yoff, color);
 
         } else if(pair_stat == 2) {
-            DrawText(renderer, "Pairing complete", font, -1, yoff, color);
+            DrawText(renderer, "Pairing complete", font, -1, h/2, color);
 
         } else if(pair_stat == 3) {
             if(pair_err == 0x80FC1047) {
                 DrawText(renderer, "    Error: incorrect PIN",
-                         font, -1, yoff, color);
+                         font, -1, h/2, color);
             } else if(pair_err == 0x80FC1040) {
                 DrawText(renderer, " Error: incorrect Account Id",
-                         font, -1, yoff, color);
+                         font, -1, h/2, color);
             } else {
                 sprintf(buf, "       Error: 0x%x", pair_err);
-                DrawText(renderer, buf, font, -1, yoff, color);
+                DrawText(renderer, buf, font, -1, h/2, color);
             }
         } else {
             idle = 0;
-            sprintf(buf, "Account ID    : %s", id);
+            sprintf(buf, "Account ID: %s", id);
             DrawText(renderer, buf, font, -1, yoff, color);
 
             yoff += (int)TTF_FontHeight(font) * 1.5;
-            sprintf(buf, "PIN code      : %04d %04d    ",
+            sprintf(buf, "PIN code  : %04d %04d    ",
                     pin / 10000, pin % 10000);
             DrawText(renderer, buf, font, -1, yoff, color);
 
-            yoff += (int)TTF_FontHeight(font) * 1.5;
-            sprintf(buf, "Remaining time: %-3ld seconds  ", t-time(0));
+            yoff += (int)TTF_FontHeight(font) * 6;
+            sprintf(buf, "Remaining time: %ld seconds", t-time(0));
             DrawText(renderer, buf, font, -1, yoff, color);
         }
 
