@@ -248,7 +248,7 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
             }
         } else {
             idle = 0;
-            sprintf(buf, "Accound ID    : %s", id);
+            sprintf(buf, "Account ID    : %s", id);
             DrawText(renderer, buf, font, -1, yoff, color);
 
             yoff += (int)TTF_FontHeight(font) * 1.5;
