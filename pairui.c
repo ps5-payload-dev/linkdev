@@ -230,17 +230,17 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
 
         } else if((err=sceRemoteplayConfirmDeviceRegist(&pair_stat, &pair_err))) {
             sprintf(buf, "Error: 0x%x", err);
-            DrawText(renderer, buf, font, -1, yoff, color);
+            DrawText(renderer, buf, font, -1, h/2, color);
 
         } else if(pair_stat == 2) {
             DrawText(renderer, "Pairing complete", font, -1, h/2, color);
 
         } else if(pair_stat == 3) {
             if(pair_err == 0x80FC1047) {
-                DrawText(renderer, "    Error: incorrect PIN",
+                DrawText(renderer, "    Error: incorrect PIN code",
                          font, -1, h/2, color);
             } else if(pair_err == 0x80FC1040) {
-                DrawText(renderer, " Error: incorrect Account Id",
+                DrawText(renderer, " Error: incorrect Account ID",
                          font, -1, h/2, color);
             } else {
                 sprintf(buf, "       Error: 0x%x", pair_err);
