@@ -23,49 +23,12 @@ along with this program; see the file COPYING. If not, see
 #include "regmgr.h"
 
 
-#define KERNEL_DLSYM(handle, sym) \
-    (sym=(void*)kernel_dynlib_dlsym(-1, handle, #sym))
+int sceUserServiceGetForegroundUser(int*);
+int sceRemoteplayInitialize(void*, size_t);
+int sceRemoteplayGeneratePinCode(uint32_t*);
+int sceRemoteplayConfirmDeviceRegist(int*, int*);
+int sceRemoteplayNotifyPinCodeError(int);
 
-
-int sceKernelLoadStartModule(const char*, unsigned long, const void*,
-                             unsigned int, void*, int*);
-int sceUserServiceGetForegroundUser(int *);
-
-int (*sceRemoteplayInitialize)(void*, size_t) = 0;
-int (*sceRemoteplayGeneratePinCode)(uint32_t*) = 0;
-int (*sceRemoteplayConfirmDeviceRegist)(int*, int*) = 0;
-int (*sceRemoteplayNotifyPinCodeError)(int) = 0;
-
-
-static int RemoteplayInit(void)
-{
-    int handle;
-
-    if(sceRemoteplayInitialize) {
-        return 0;
-    }
-    if((handle=sceKernelLoadStartModule("/system/common/lib/libSceRemoteplay.sprx",
-                                        0, 0, 0, 0, 0)) < 0) {
-        return -1;
-    }
-
-    if(!KERNEL_DLSYM(handle, sceRemoteplayInitialize)) {
-        return -1;
-    }
-    sceRemoteplayInitialize(0, 0);
-
-    if(!KERNEL_DLSYM(handle, sceRemoteplayGeneratePinCode)) {
-        return -1;
-    }
-    if(!KERNEL_DLSYM(handle, sceRemoteplayConfirmDeviceRegist)) {
-        return -1;
-    }
-    if(!KERNEL_DLSYM(handle, sceRemoteplayNotifyPinCodeError)) {
-        return -1;
-    }
-
-    return 0;
-}
 
 static void Base64Encode(uint64_t input, char* output) {
     char charset[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -166,10 +129,6 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
     int w;
     int h;
 
-    if(RemoteplayInit()) {
-        return -1;
-    }
-
     if(GetAccountId(id)) {
         return -1;
     }
@@ -265,6 +224,12 @@ int PairUI_Main(SDL_Renderer* renderer, TTF_Font* font)
     }
 
     return 0;
+}
+
+
+static void __attribute__((constructor))
+PairUI_Constructor(void) {
+    sceRemoteplayInitialize(0, 0);
 }
 
 

@@ -27,7 +27,7 @@ VERSION_TAG := $(shell git describe --abbrev=10 --dirty --always --tags)
 CFLAGS := -O1 -g -Wall -DVERSION_TAG=\"$(VERSION_TAG)\"
 LDADD := `$(PS5_PAYLOAD_SDK)/bin/prospero-sdl2-config --cflags --libs`
 LDADD += -lSDL2_ttf `$(PS5_PAYLOAD_SDK)/bin/prospero-freetype-config --libs`
-LDADD += -lSceRegMgr -lSceUserService -lSDL2main #-lSceRemoteplay
+LDADD += -lSceRegMgr -lSceUserService -lSDL2main -lSceRemoteplay
 
 ELF := LinkDev.elf
 
